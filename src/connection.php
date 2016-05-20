@@ -4,7 +4,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "coderslab";
-$baseName = "Twittee";
+$baseName = "Twitter";
 
 
 // Tworzernie polaczenia
