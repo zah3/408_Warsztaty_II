@@ -1,10 +1,9 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- * Author:  zachariasz
- * Created: 2016-05-20
- */
 
+CREATE TABLE User (
+    id INT AUTO_INCREMENT NOT NULL,
+    email VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    fullName VARCHAR(100) NOT NULL,
+    active TINYINT(1) DEFAULT 1,
+    PRIMARY KEY(id)
+)
