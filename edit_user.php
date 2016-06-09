@@ -12,58 +12,61 @@ if(!isset($_SESSION['loggedUserId'])){
 }
 $userId = $_SESSION['loggedUserId'];
 if($_SERVER['REQUEST_METHOD'] === "POST"){
-    $emailNew = strlen(trim($_POST['newEmail'])) > 0 ? trim($_POST['newEmail']) : null;
-    $password = strlen(trim($_POST['newPassword'])) > 0 ? trim($_POST['newPassword']) : null;
-    $retypePassword = strlen(trim($_POST['retypePassword'])) > 0 ? trim($_POST['retypePassword']) : null;
-    $fullNameNew = strlen(trim($_POST['newFullName'])) > 0 ? trim($_POST['newFullName']) : null;
-    
+   
     $user = new User();
     $user->loadFromDB($conn,$userId );
     switch($_POST['submit']){
         case 'newEmailSubmit':
+            $emailNew = strlen(trim($_POST['newEmail'])) > 0 ? trim($_POST['newEmail']) : null;
             if($emailNew){
-                if(!empty($_POST['newEmail']) && isset($_POST['newEmail'])){
+                if(!empty($_POST['newEmail'])){
                     $user->setEmail($emailNew);
                     $user->saveToDB($conn);
                     echo"<div class='alert alert-info'>";
                     echo"Email has changed";
+                    echo"</div>";
                 }
-                else{
+            }
+            else{
                     echo"<div class='alert alert-warning'>";
                     echo"cannot Change on empty Email";
                     echo"</div>";
-                }
-             }
+            }
             break;
          case 'fullNameSubmit':
+            $fullNameNew = strlen(trim($_POST['newFullName'])) > 0 ? trim($_POST['newFullName']) : null;
             if($fullNameNew){
-                if(!empty($_POST['newFullName']) && isset($_POST['newFullName'])){
+                if(!empty($_POST['newFullName'])){
                     $user->setFullName($fullNameNew);
                     $user->saveToDB($conn);
                     echo"<div class='alert alert-info'>";
                     echo"Full name has changed";
                     echo"</div>";
                 }
-                else{
+            }
+            else{
                     echo"<div class='alert alert-warning'>";
-                    echo"cannot Change on empty full name";
+                    echo"Cannot change on empty full name";
                     echo"</div>";
-                }
             }
             break;
          case 'passwordSubmit':
+            $password = strlen(trim($_POST['newPassword'])) > 0 ? trim($_POST['newPassword']) : null;
+            $retypePassword = strlen(trim($_POST['retypePassword'])) > 0 ? trim($_POST['retypePassword']) : null;
             if($password && $retypePassword && $password === $retypePassword){
                 if(!empty($_POST['newPassword']) && isset($_POST['newPassword']) && !empty($_POST['retypePassword']) && isset($_POST['retypePassword'])){
                     $user->setPassword($password, $retypePassword);
                     $user->saveToDB($conn);
-                    echo"password name has changed.";
+                    echo"<div class='alert alert-info'>";
+                    echo"Password has changed.";
+                    echo"</div>";
                 }
                 else{
                     echo"<div class='alert alert-warning'>";
-                    echo"cannot Change on empty password.";
+                    echo"Cannot change on empty password.";
                     echo"</div>";
                 }
-             }
+            }
             else{
                 echo"<div class='alert alert-warning'>";
                 echo"Wrong values in 'password' and 'retype password'.";

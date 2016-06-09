@@ -71,19 +71,28 @@ class Message{
         if($this->id === -1){
             $sql = "INSERT INTO Message (sender_id, receiver_id, title, text, status) VALUE('{$this->sender_id}', '{$this->receiver_id}', '{$this->title}', '{$this->text}', '{$this->status}' )";
             if($conn->query($sql)){
+                echo"<div class='alert alert-info'>";
                 echo"Your Messege sended succesfull";
+                echo"</div>";
             }else{
+                echo"<div class='alert alert-alert'>";
                 echo"There was problem to send message".$this->error;
+                echo"</div>";
             }
             
        }elseif($this->id !== -1){
             $sql = "UPDATE Message SET sender_id='{$this->sender_id}', receiver_id=''{$this->receiver_id}', title='{$this->tittle}', text ='{$this->text}', status='{$this->status}'  WHERE id='{$this->id}')";
             if($conn->query($sql)){
+                
+                echo"<div class='alert alert-info'>";
                 echo"Message has uptodate succesfull.";
+                echo"</div>";
                 return true;
             }
             else{
+                echo"<div class='alert alert-info'>";
                 echo"Cannot uptodate Message".$conn->error;
+                echo"</div>";
                 return false;
             }
         }

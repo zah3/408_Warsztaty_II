@@ -57,18 +57,18 @@ if(!isset($_SESSION['loggedUserId'])) {
                     echo"<table class='table hover'>";
                     echo"<th>Fullname</th><th>text</th><th>Date and time</th>";
                     for ($i = 0; $i < count($comments);$i++){
-                        echo"<tr><td><a href='User_page.php?id={$userInfo['id']}'>{$comments[$i][0]}</a></td><td>{$comments[$i][2]}</td><td>{$comments[$i][1]}</td></tr>";
+                        echo"<tr><td><a href='User_page.php?id={$comments[$i][3]}'>{$comments[$i][0]}</a></td><td>{$comments[$i][2]}</td><td>{$comments[$i][1]}</td></tr>";
                     }
                     echo"</table>";
                 }
                 if($_SERVER['REQUEST_METHOD']=== "POST"){
-                   if(!empty($_POST['Comment'])){
-
+                   if(!empty($_POST['Comment']) &&  trim($_POST['Comment']) != "" ){   
+                        
                         $newComment = new Comment();
                         $newComment->setCommentId($_GET['id']);
                         $newComment->setUserId($_SESSION['loggedUserId']);
                         $newComment->setCreationDate(date('Y-m-d G:i'));
-                        $newComment->setText($_POST['Comment']);
+                        $newComment->setText(trim($_POST['Comment']));
                         $newComment->saveCommentToDb($conn);
                     }else{
                         echo"<div class='alert alert-warning'>";

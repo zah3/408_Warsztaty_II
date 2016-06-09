@@ -50,7 +50,7 @@ if(!isset($_SESSION['loggedUserId'])) {
                         echo"<h3>E-mail: {$userInfo['email']}</h3>";
                         if($userId === $_SESSION['loggedUserId']) {
                             echo"<a class='btn btn-info' href='edit_user.php?id={$_SESSION['loggedUserId']}'>Edit info</a>";
-                            echo"<br>";
+                            echo"    ";
                             echo"<a class='btn btn-info' href='delete_user.php?id={$_SESSION['loggedUserId']}'>Delete account</a>";
                         }
                         else {

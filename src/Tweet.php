@@ -24,12 +24,12 @@ class Tweet {
     }
     
     public static function loadAllComments(mysqli $conn, $id){
-        $sql = "SELECT Comment.text, User.fullName, Comment.creation_date FROM Comment JOIN User ON Comment.user_id = User.id WHERE post_id = $id ORDER BY Comment.creation_date DESC";
+        $sql = "SELECT Comment.text, User.fullName, Comment.creation_date, Comment.user_id FROM Comment JOIN User ON Comment.user_id = User.id WHERE post_id = $id ORDER BY Comment.creation_date DESC";
         $result = $conn->query($sql);
         if($result->num_rows > 0 ){
             $comments = [];
             while($row = $result -> fetch_assoc()){
-                   $comments[] = [$row['fullName'],$row['creation_date'],$row['text']];
+                   $comments[] = [$row['fullName'],$row['creation_date'],$row['text'],$row['user_id']];
 
             }
             return $comments;

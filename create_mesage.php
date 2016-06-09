@@ -60,7 +60,7 @@ if(!isset($_SESSION['loggedUserId'])){
                     $newMessage->saveMessageToDBP($conn);
                 }
                 else{
-                    echo"<div class='alert alert-info'>";
+                    echo"<div class='alert alert-warning'>";
                     echo"Cannot Add empty message";
                     echo"</div>";
                 }

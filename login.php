@@ -15,7 +15,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
            $_SESSION['loggedUserId'] = $loggedUserId;
            header("Location:index.php");
        }else{
-           echo"<div class='alert alert-info'>";
+           echo"<div class='alert alert-warning'>";
            echo"Incorrect email or password <br />";
            echo"</div>";
        }

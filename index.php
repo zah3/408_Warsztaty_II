@@ -46,7 +46,7 @@ if(!isset($_SESSION['loggedUserId'])){
                 echo"</nav>";
                 
             if($_SERVER['REQUEST_METHOD'] === "POST"){
-                if (!empty($_POST['tweetContent'])){
+                if (!empty($_POST['tweetContent']) && trim($_POST['tweetContent']) != "" ){
                     $textTweet = $_POST['tweetContent'];
                     $userId = $_SESSION['loggedUserId'];
                     $newTweet = new Tweet();
