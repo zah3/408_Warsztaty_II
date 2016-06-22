@@ -44,39 +44,38 @@ if(!isset($_SESSION['loggedUserId'])) {
                 echo"</nav>";
                 if($_SERVER['REQUEST_METHOD'] === 'GET'){
                     $userId = isset($_GET['id']) ? $_GET['id'] : null;{
-
-                        $userInfo = User::getUserById($conn, $userId);
-                        echo"<h2>{$userInfo['fullName']}</h2>";
-                        echo"<h3>E-mail: {$userInfo['email']}</h3>";
+                        
+                        $user = new User();
+                        $user->loadFromDB($conn, $userId);
+                        echo"<h2>{$user->getFullName()}</h2>";
+                        echo"<h3>{$user->getEmail()}</h3>";
                         if($userId === $_SESSION['loggedUserId']) {
                             echo"<a class='btn btn-info' href='edit_user.php?id={$_SESSION['loggedUserId']}'>Edit info</a>";
                             echo"    ";
                             echo"<a class='btn btn-info' href='delete_user.php?id={$_SESSION['loggedUserId']}'>Delete account</a>";
                         }
                         else {
-                            echo"<a class='btn btn-info' href='create_mesage.php?id={$userInfo['id']}'>Send message</a>";
+                            echo"<a class='btn btn-info' href='create_mesage.php?id={$user->getId()}'>Send message</a>";
                         }
-            
-            
-                        
-                        $userTweets = User::loadAllTweets($conn, $userId);
+
+                        $allTweets = Tweet::loadAllTweets($conn, $userId);
 
                         echo"<div class='row'>";
-                        echo"<h1> All tweets of user: {$userInfo['fullName']}</h1>";
+                        echo"<h1> All tweets of user: {$user->getFullName()}</h1>";
 
                         echo "<table class='table hover'>";
                         echo "<th>Contents</th><th>Link</th>";
-                        if(!empty($userTweets)){
-                            for($i = 0;$i < count($userTweets);$i++){
-                                echo"<tr><td>{$userTweets[$i][1]}</td><td><a href='Tweet_page.php?id={$userTweets[$i][0]}'>Show</a></td></tr>";
+                        if(!empty($allTweets)){
+                            foreach($allTweets as $tweet ){
+                                $tweetId = $tweet->getId();
+                                $tweetText = $tweet->getText();
+
+                                echo"<tr><td>$tweetText</td><td><a href='Tweet_page.php?id=$tweetId'>Show</a></td></tr>";
                             }
-                        
                         }
                         echo"</table>";
                         echo"<br />";
                         echo"</div>";
-                    
-
                 }
             }?>
         </div>

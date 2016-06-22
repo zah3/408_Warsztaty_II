@@ -1,40 +1,19 @@
 <?php
 
+require_once 'Message.php';
+
 class User {
     
-    static function loadMessageReceived(mysqli $conn, $id) {
-        $sql = "SELECT Message.id, Message.sender_id, Message.title, Message.text, Message.status, User.fullName FROM Message JOIN User ON Message.sender_id = User.id WHERE receiver_id = '$id'";
-        $result = $conn->query($sql);
-        if($result->num_rows > 0 ){
-            $received= [];
-            while($row = $result -> fetch_assoc()){
-                   $received[] = [$row['id'],$row['sender_id'],$row['title'],$row['text'],$row['status'],$row['fullName']];
-            }
-            return $received;
-        }
-        return false;
-    }   
-    static function loadMessageSent(mysqli $conn, $id) {
-        $sql = "SELECT Message.id, Message.receiver_id, Message.title, Message.text, User.fullName FROM Message JOIN User ON Message.receiver_id = User.id WHERE sender_id = '$id'";
-        $result = $conn->query($sql);
-         if($result->num_rows > 0 ){
-            $sent = [];
-            while($row = $result -> fetch_assoc()){
-                   $sent[] = [$row['id'],$row['receiver_id'],$row['title'],$row['text'],$row['fullName']];
-            }
-            return $sent;
-        }
-        return false;
-    }
-    public static function getUserById(mysqli $conn, $id){
-        $sql = "SELECT * FROM User WHERE id = $id";
-        $result = $conn->query($sql);
-        if($result->num_rows == 1){
-            return $result->fetch_assoc();
-        }else{
-            return false;
-        }
-    }
+
+//    public static function getUserById(mysqli $conn, $id){
+//        $sql = "SELECT * FROM User WHERE id = $id";
+//        $result = $conn->query($sql);
+//        if($result->num_rows == 1){
+//            return $result->fetch_assoc();
+//        }else{
+//            return false;
+//        }
+//    }
     public static function getUserByEmail(mysqli $conn, $email){
         $sql = "SELECT * FROM User WHERE email = '$email'";
         $result = $conn->query($sql);
@@ -59,18 +38,7 @@ class User {
             return false;
         }
     }
-    public static function loadAllTweets(mysqli $conn, $id){
-        $sql = "SELECT * FROM Tweet WHERE user_id = $id";
-        $result = $conn->query($sql);
-        if($result->num_rows > 0 ){
-            $tweets = [];
-            while($row = $result -> fetch_assoc()){
-                   $tweets[] = [$row['id'],$row['text']];
-            }
-            return $tweets;
-        }
-        return false;
-    }
+
     
     private $id;
     private $email;

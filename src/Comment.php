@@ -1,9 +1,28 @@
 <?php
 
 class Comment {
+
+    public static function loadAllComments(mysqli $conn, $id){
+        $sql = "SELECT Comment.text, User.fullName, Comment.creation_date, Comment.user_id FROM Comment JOIN User ON Comment.user_id = User.id WHERE post_id = $id ORDER BY Comment.creation_date DESC";
+        $result = $conn->query($sql);
+        if($result->num_rows > 0 ){
+            $comments = [];
+            while($row = $result -> fetch_assoc()){
+                $commentsObjects = new Comment();
+                $commentsObjects->creation_date = $row['creation_date'];
+                $commentsObjects->text = $row['text'];
+                $commentsObjects->user_id = $row['user_id'];
+
+
+                $comments[] = $commentsObjects;
+            }
+            return $comments;
+        }
+
+    }
     
-    static function show(mysqli $conn, $id) {
-        $sql = "SELECT * FROM Comment WHERE id = '$id'";
+    public function show(mysqli $conn, $id) {
+        $sql = "SELECT * FROM Comment WHERE id = $id";
         
         $result = $conn->query($sql);
         if($result->num_rows == 1) {

@@ -1,20 +1,46 @@
 <?php
 
 class Message{
-    
 
-    public static function getMessageById(mysqli $conn, $id) {
-        $sql="SELECT * FROM Message WHERE id = '$id'";
-        
+    static function loadMessageReceived(mysqli $conn, $id) {
+        $sql = "SELECT Message.id, Message.sender_id, Message.title, Message.text, Message.status FROM Message JOIN User ON Message.sender_id = User.id WHERE receiver_id = $id";
         $result = $conn->query($sql);
-        if($result->num_rows == 1) {
-            $row = $result->fetch_assoc();
-            return $row;
+        if($result->num_rows > 0 ){
+            $receivedMessages= [];
+            while($row = $result -> fetch_assoc()){
+                $messageObject = new Message();
+                $messageObject->id = $row['id'];
+                $messageObject->sender_id = $row['sender_id'];
+                $messageObject->title = $row['title'];
+                $messageObject->text = $row['text'];
+                $messageObject->status = $row['status'];
+
+                $receivedMessages[]= $messageObject;
+                var_dump($receivedMessages);
+            }
+            return $receivedMessages;
         }
-        else {
-            return false;
-        }
+
     }
+    static function loadMessageSent(mysqli $conn, $id) {
+        $sql = "SELECT Message.id, Message.receiver_id, Message.title, Message.text FROM Message JOIN User ON Message.receiver_id = User.id WHERE sender_id = $id";
+        $result = $conn->query($sql);
+        if($result->num_rows > 0 ){
+            $sentMessages = [];
+            while($row = $result -> fetch_assoc()){
+                $messageObject = new Message();
+                $messageObject->id = $row['id'];
+                $messageObject->receiver_id = $row['receiver_id'];
+                $messageObject->title = $row['title'];
+                $messageObject->text = $row['text'];
+
+                $sentMessages[] = $messageObject;
+            }
+            return $sentMessages;
+        }
+
+    }
+    
     private $id;
     private $sender_id;
     private $receiver_id;
@@ -107,8 +133,8 @@ class Message{
             $this->receiver_id = $rowMessage['receiver_id'];
             $this->title = $rowMessage['title'];
             $this->text = $rowMessage['text'];
-            $this->status = $$rowMessage['status'];
+            $this->status = $rowMessage['status'];
         }
-        return null;
+
     }
 }

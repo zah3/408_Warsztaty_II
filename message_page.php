@@ -48,33 +48,31 @@ if(!isset($_SESSION['loggedUserId'])){
                 if($_SERVER['REQUEST_METHOD'] === "GET"){
 
                     if(isset($_GET['sender_id'])){
-                        $sender = User::getUserById($conn, $_GET['sender_id']);
-                        echo"<p>: {$sender['fullName']}</p>";
+                        $sender = new User();
+                        $sender->loadFromDB($conn, $_GET['sender_id']);
+                                
+//                        $sender = User::getUserById($conn, $_GET['sender_id']);
+                        echo"<p>Receiver : {$sender->getFullName()}</p>";
                     }
                     if(isset($_GET['receiver_id'])){
-                        $receiver = User::getUserById($conn, $_GET['receiver_id']);
-                        echo"<h2>Author: {$receiver['fullName']}</h2>";
+                        $receiver = new User();
+                        $receiver->loadFromDB($conn, $_GET['receiver_id']);
+//                        $receiver = User::getUserById($conn, $_GET['receiver_id']);
+                        echo"<h2>Author: {$receiver->getFullName()}</h2>";
                     }
                     if(isset($_GET['message_id'])){
-                        $message = Message::getMessageById($conn,$_GET['message_id']);
-                        echo"<p>Content:<br> {$message['text']}</p>";
-                    }
-                     if(isset($_GET['tittle'])){
-                        $message = Message::getMessageById($conn,$_GET['tittle']);
-                        echo"<p>Content:<br> {$message['title']}</p>";
+                        $message1 = new Message ();
+                        $message1->loadMessageFromDB($conn, $_GET['message_id']);
+                        $message1Text = $message1->getText();
+                        
+                        echo"<h2>Title:<br> <strong>{$message1->getTitle()}</strong></h2>";
+                        echo"<h3>Content:<br><strong> {$message1Text}</strong></h3>";
+
                     }
                     if($_GET['receiver_id'] !== $_SESSION['loggedUserId']) {
                         $sql = "UPDATE Message SET status=1 WHERE id={$_GET['message_id']} ";
-                        if($conn->query($sql) === TRUE) {
-                            echo"<div class='alert alert-info'>";
-                            echo"Message read";
-                            
-                        }
-                        else {
-                            echo"<div class='alert alert-warning'>";
-                            echo"Connection error";
-                            echo"</div>";
-                        }
+                        $conn->query($sql);
+                        
                     }
                 }
              ?>

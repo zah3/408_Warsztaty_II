@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST" ){
         }
         
     }else 
-        if(!$email){
+        if(!$email || filter_var("$email", FILTER_VALIDATE_EMAIL == false)){
             echo"<div class='alert alert-warning'>";
             echo "Incorrect email <br />";
             echo"</div>";

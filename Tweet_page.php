@@ -42,24 +42,40 @@ if(!isset($_SESSION['loggedUserId'])) {
                 echo"</div>";
                 echo"</div>";
                 echo"</nav>";
-                if($_SERVER['REQUEST_METHOD'] === 'GET'){
+                if($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                     $tweetId = isset($_GET['id']) ? $_GET['id'] : null;
-                    $thisTweet = Tweet::show($conn, $tweetId);
-                    $userInfo = User::getUserById($conn, $thisTweet['user_id']);
-                    $comments = Tweet::loadAllComments($conn, $tweetId);
+                    $tweet = new Tweet();
+                    $tweet->loadTweetFromDB($conn, $tweetId);
+                    $idUserTweet = $tweet->getUserId();
 
-                    echo"<h3>All information about this tweet:</h3>";
-                    echo"<p> Author : {$userInfo['fullName']}</p>";
-                    echo"<p> Text :  {$thisTweet['text']}</p>";
-                    echo"<h3>Comments:</h3>";
-                    echo"<br>";
-                    echo"<table class='table hover'>";
-                    echo"<th>Fullname</th><th>text</th><th>Date and time</th>";
-                    for ($i = 0; $i < count($comments);$i++){
-                        echo"<tr><td><a href='User_page.php?id={$comments[$i][3]}'>{$comments[$i][0]}</a></td><td>{$comments[$i][2]}</td><td>{$comments[$i][1]}</td></tr>";
+                    $user = new User();
+                    $user->loadFromDB($conn, $idUserTweet);
+
+
+                    echo "<h3>All information about this tweet:</h3>";
+                    echo "<p> Author : {$user->getFullName()}</p>";
+                    echo "<p> Text :  {$tweet->getText()}</p>";
+                    echo "<h3>Comments:</h3>";
+                    echo "<br>";
+                    echo "<table class='table hover'>";
+                    echo "<th>Fullname</th><th>text</th><th>Date and time</th>";
+
+                    //show All commments for tweet
+                    $comments = Comment::loadAllComments($conn, $tweetId);
+                    if (!empty($comments)) {
+                        foreach ($comments as $comment) {
+                            $commentText = $comment->getText();
+                            $commentDate = $comment->getCreationDate();
+                            $commentUserId = $comment->getUserId();
+
+                            $userComment = new User();
+                            $userComment->loadFromDB($conn, $commentUserId);
+                            $userFullname = $userComment->getFullName();
+                            echo "<tr><td><a href='User_page.php?id=$commentUserId'>{$userFullname}</a></td><td>{$commentText}</td><td>{$commentDate}</td></tr>";
+                        }
+                        echo "</table>";
                     }
-                    echo"</table>";
                 }
                 if($_SERVER['REQUEST_METHOD']=== "POST"){
                    if(!empty($_POST['Comment']) &&  trim($_POST['Comment']) != "" ){   

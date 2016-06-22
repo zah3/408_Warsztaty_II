@@ -19,19 +19,28 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
         case 'newEmailSubmit':
             $emailNew = strlen(trim($_POST['newEmail'])) > 0 ? trim($_POST['newEmail']) : null;
             if($emailNew){
-                if(!empty($_POST['newEmail'])){
-                    $user->setEmail($emailNew);
-                    $user->saveToDB($conn);
-                    echo"<div class='alert alert-info'>";
-                    echo"Email has changed";
-                    echo"</div>";
+                if(filter_var("$emailNew", FILTER_VALIDATE_EMAIL) == $emailNew){
+                    if(!empty($_POST['newEmail'])){
+                        $user->setEmail($emailNew);
+                        $user->saveToDB($conn);
+                        echo"<div class='alert alert-info'>";
+                        echo"Email has changed";
+                        echo"</div>";
+                    }
+                    else{
+                        echo"<div class='alert alert-warning'>";
+                        echo"cannot Change on empty Email";
+                        echo"</div>";
+                        }
                 }
+                 else{
+                        echo"<div class='alert alert-warning'>";
+                        echo"Sorry, this is not an e-mail addres.";
+                        echo"</div>";
+                        }
+                    
             }
-            else{
-                    echo"<div class='alert alert-warning'>";
-                    echo"cannot Change on empty Email";
-                    echo"</div>";
-            }
+    
             break;
          case 'fullNameSubmit':
             $fullNameNew = strlen(trim($_POST['newFullName'])) > 0 ? trim($_POST['newFullName']) : null;

@@ -1,5 +1,5 @@
 <?php
-
+require_once 'src/Message.php';
 require_once 'src/Tweet.php';
 require_once 'src/User.php';
 require_once 'src/connection.php';
@@ -43,28 +43,50 @@ if(!isset($_SESSION['loggedUserId'])) {
                 echo"<h2> Inbox: </h2>";
                 echo"<table class='table hover'>";
                 echo"<th>Author :</th><th>Title</th>";
+            //loading received messages
                 $userId = $_SESSION['loggedUserId'];
-                $messageReceived = User::loadMessageReceived($conn, $userId);
-                for($i = 0; $i < count($messageReceived); $i++) {
-                    echo"<br>";
-                    
-                    if($messageReceived[$i][4] == 1){
-                        echo"<tr><td><a href='User_page.php?id={$messageReceived[$i][1]}'>{$messageReceived[$i][5]}</a></td><td><a href='message_page.php?message_id={$messageReceived[$i][0]}&sender_id=$userId&receiver_id={$messageReceived[$i][1]}'>{$messageReceived[$i][3]}</a></td></tr>";  
-                    }
-                    if($messageReceived[$i][4] == 0){
-                        echo"<tr><td><strong><a href='User_page.php?id={$messageReceived[$i][1]}'>{$messageReceived[$i][5]}</a></td><td><a href='message_page.php?message_id={$messageReceived[$i][0]}&sender_id=$userId&receiver_id={$messageReceived[$i][1]}'>{$messageReceived[$i][3]}</a></strong></td></tr>";  
+                $messagesReceived = Message::loadMessageReceived($conn, $userId);
+
+                if (!empty($messagesReceived)) {
+                    foreach ($messagesReceived as $message) {
+                        $messageId = $message->getId();
+                        $messageSenderId = $message->getSenderId();
+                        $messageTitle = $message->getTitle();
+                        $messageText = $message->getText();
+                        $messageStatus = $message->getStatus();
+
+                        $sender = new User();
+                        $sender->loadFromDB($conn, $messageSenderId);
+                        $senderName = $sender->getFullName();
+
+                        echo "<br>";
+
+                        if ($messageStatus == 1) {
+                            echo "<tr><td><a href='User_page.php?id={$messageSenderId}'>{$senderName}</a></td><td><a href='message_page.php?message_id={$messageId}&sender_id=$messageSenderId&receiver_id={$userId}'></a></td></tr>";
+                        }
                     }
                 }
+            //loading sent message 
                 echo"</table>";
                 echo"<hr border= 2px/>";
                 echo"<h2>Outbox</h2>";    
-                $messageSent = User::loadMessageSent($conn, $userId); 
+                $messageSent = Message::loadMessageSent($conn, $userId);
                 echo"<table class ='table hover'>";
                 echo"<th>Send to:</th><th>Title</th>";
-                for($i = 0; $i < count($messageSent); $i++) {         
-                         if($messageSent[$i][4] == 0) {
-                           echo"<tr><td><a href='User_page.php?id={$messageSent[$i][1]}'>{$messageSent[$i][4]}</a></td><td><a href='message_page.php?message_id={$messageSent[$i][0]}&receiver_id=$userId&sender_id={$messageSent[$i][1]}'>{$messageSent[$i][3]}</a></td></tr>"; 
-                        }
+                if(!empty($messageSent)){
+                    foreach($messageSent as $message) {
+                        $messageId = $message->getId();
+                        $messageReceiverId = $message->getReciverId();
+                        $messageTitle = $message->getTitle();
+                        $messageText = $message->getText();
+                        $messageStatus = $message->getStatus();
+
+                        $receiver = new User();
+                        $receiver->loadFromDB($conn, $messageReceiverId);
+                        $receiverName = $receiver->getFullName();
+                             echo"<tr><td><a href='User_page.php?id={$messageReceiverId}'>{$receiverName}</a></td><td><a href='message_page.php?message_id={$messageId}&receiver_id=$messageReceiverId&sender_id={$userId}'>{$messageTitle}</a></td></tr>";
+                        
+                     }
                  }
             echo "</TABLE>";
             ?>

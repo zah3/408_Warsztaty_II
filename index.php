@@ -2,6 +2,7 @@
 
 session_start();
 
+require_once 'src/Comment.php';
 require_once 'src/Tweet.php';
 require_once 'src/User.php';
 require_once 'src/connection.php';
@@ -47,6 +48,7 @@ if(!isset($_SESSION['loggedUserId'])){
                 
             if($_SERVER['REQUEST_METHOD'] === "POST"){
                 if (!empty($_POST['tweetContent']) && trim($_POST['tweetContent']) != "" ){
+
                     $textTweet = $_POST['tweetContent'];
                     $userId = $_SESSION['loggedUserId'];
                     $newTweet = new Tweet();
@@ -87,13 +89,16 @@ if(!isset($_SESSION['loggedUserId'])){
             <?php 
                 echo"<div class='row'>";
                 echo"<h1> All tweets:</h1>";
-                $allTweets = User::loadALLTweets($conn,$_SESSION['loggedUserId']);
+                $allTweets = Tweet::loadAllTweets($conn,$_SESSION['loggedUserId']);
 
                 echo "<table class='table hover'>";
                 echo "<th>Content</th><th>Link</th>";
                 if(!empty($allTweets)){
-                    for($i = 0;$i < count($allTweets);$i++){
-                        echo"<tr><td>{$allTweets[$i][1]}</td><td><a href='Tweet_page.php?id={$allTweets[$i][0]}'>Show</a></td></tr>";
+                    foreach($allTweets as $tweet ){
+                        $tweetId = $tweet->getId();
+                        $tweetText = $tweet->getText();
+
+                        echo"<tr><td>$tweetText</td><td><a href='Tweet_page.php?id=$tweetId'>Show</a></td></tr>";
                     }
                 }
                 echo"</table>";
